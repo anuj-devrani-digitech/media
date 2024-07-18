@@ -1,0 +1,841 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model address_city {
+  city_id       Int            @id @default(autoincrement())
+  city_name     String?        @db.VarChar(150)
+  state_id      Int?
+  address_state address_state? @relation(fields: [state_id], references: [state_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model address_state {
+  state_id     Int            @id @default(autoincrement())
+  state        String?        @db.VarChar(100)
+  address_city address_city[]
+}
+
+model amenities {
+  amenity_id    Int     @id @default(autoincrement())
+  icon_path     String? @db.VarChar(255)
+  amentity_name String? @db.VarChar(150)
+  is_active     Int
+}
+
+model awards {
+  award_id      Int       @id @default(autoincrement())
+  name          String?   @db.VarChar(160)
+  awardee       String?   @db.VarChar(80)
+  year          Int?
+  status        Int?      @db.SmallInt
+  website_id    Int?
+  sorting_index Int?
+  created_on    DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model awards_preview {
+  award_id      Int       @id @default(autoincrement())
+  name          String    @db.VarChar(160)
+  awardee       String?   @db.VarChar(80)
+  year          Int?
+  status        Int?      @db.SmallInt
+  website_id    Int?
+  sorting_index Int?
+  created_on    DateTime? @default(now()) @db.Timestamp(6)
+  created_by    Int?
+}
+
+model bed_types {
+  bed_type_id Int     @id @default(autoincrement())
+  bed_type    String? @db.VarChar(50)
+  is_active   Int?    @db.SmallInt
+}
+
+model brand_resorts {
+  brand_resort_id Int        @id @default(autoincrement())
+  brand_id        Int?
+  resort_name     String?    @db.VarChar(100)
+  resort_code     String?    @db.VarChar(50)
+  resort_location String     @db.VarChar(100)
+  is_active       Int?       @db.SmallInt
+  brands          brands?    @relation(fields: [brand_id], references: [brand_id], onDelete: NoAction, onUpdate: NoAction)
+  websites        websites[]
+}
+
+model brands {
+  brand_id      Int             @id @default(autoincrement())
+  brand_name    String?         @db.VarChar(100)
+  brand_resorts brand_resorts[]
+  websites      websites[]
+}
+
+model collateral_heads {
+  id              Int     @id @default(autoincrement())
+  collateral_name String? @db.VarChar(150)
+  sorting_index   Int?
+  website_id      Int?
+}
+
+model collaterals {
+  collateral_id      Int       @id @default(autoincrement())
+  heading            String?   @db.VarChar(100)
+  title              String?   @db.VarChar(200)
+  description        String?
+  pdf_url            String?   @db.VarChar(255)
+  status             Int?      @db.SmallInt
+  website_id         Int?
+  sorting_index      Int?
+  created_on         DateTime? @default(now()) @db.Timestamp(6)
+  collateral_head_id Int?
+}
+
+model collaterals_preview {
+  collateral_id      Int       @id @default(autoincrement())
+  heading            String?   @db.VarChar(100)
+  title              String?   @db.VarChar(200)
+  description        String?
+  pdf_url            String?   @db.VarChar(255)
+  status             Int?      @db.SmallInt
+  website_id         Int?
+  sorting_index      Int?
+  created_on         DateTime? @default(now()) @db.Timestamp(6)
+  collateral_head_id Int?
+  created_by         Int?
+}
+
+model enquiry_status {
+  enquiry_status_id Int     @id @default(autoincrement())
+  status            String? @db.VarChar(160)
+  sorting_index     Int?
+  is_active         Int?    @db.SmallInt
+}
+
+model enquiry_types {
+  enquiry_type_id   Int                 @id @default(autoincrement())
+  enquiry_type      String?             @db.VarChar(50)
+  is_active         Int?                @db.SmallInt
+  website_enquiries website_enquiries[]
+}
+
+model global_settings {
+  global_setting_id   Int       @id @default(autoincrement())
+  setting_name        String?   @db.VarChar(250)
+  setting_description String?
+  setting_value       String?
+  show_to_user        Int?      @db.SmallInt
+  created_on          DateTime? @db.Timestamp(6)
+  website_id          Int?
+}
+
+model html_elements {
+  html_element_id Int     @id @default(autoincrement())
+  name            String? @db.VarChar(50)
+  code            String? @db.VarChar(50)
+}
+
+model media_albums {
+  media_album_id Int           @id @default(autoincrement())
+  media_album    String?       @db.VarChar(250)
+  website_id     Int?
+  created_on     DateTime?     @db.Timestamp(6)
+  created_by     Int?
+  media_files    media_files[]
+}
+
+model media_files {
+  media_file_id   Int           @id @default(autoincrement())
+  media_file_path String?
+  media_title     String?       @db.VarChar(250)
+  website_id      Int?
+  media_album_id  Int?
+  media_type_id   Int?
+  seo_tags        String?
+  created_by      Int?
+  created_on      DateTime?     @db.Timestamp(6)
+  is_media_album  Int?          @db.SmallInt
+  media_caption   String?
+  media_albums    media_albums? @relation(fields: [media_album_id], references: [media_album_id], onDelete: NoAction, onUpdate: NoAction)
+  media_types     media_types?  @relation(fields: [media_type_id], references: [media_type_id], onDelete: NoAction, onUpdate: NoAction)
+  websites        websites?     @relation(fields: [website_id], references: [website_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model media_types {
+  media_type_id   Int           @id @default(autoincrement())
+  media_type      String?       @db.VarChar(20)
+  media_type_code String?       @db.VarChar(10)
+  is_active       Int?          @default(1) @db.SmallInt
+  media_files     media_files[]
+}
+
+model navigation_item {
+  navigation_item_id    Int                     @id @default(autoincrement())
+  navigation_item       String?                 @db.VarChar(150)
+  navigation_url        String?                 @db.VarChar(255)
+  parent_id             Int?
+  sorting_index         Int?
+  app_form_id           Int?
+  is_active             Int?                    @db.SmallInt
+  navigation_icon       String?                 @db.VarChar(255)
+  only_for_superadmin   Int?                    @db.SmallInt
+  user_role_navigations user_role_navigations[]
+}
+
+model newsletters {
+  news_letter_id    Int       @id(map: "newslatters_pkey") @default(autoincrement())
+  website_id        Int
+  email             String    @db.VarChar(50)
+  created_on        DateTime? @db.Timestamp(6)
+  last_requested_on DateTime? @db.Timestamp(6)
+}
+
+model page_section_detail_data {
+  id                                Int       @unique @default(autoincrement())
+  page_section_detail_form_field_id Int?
+  data                              String?
+  created_by                        Int?
+  created_on                        DateTime? @db.Date
+  created_IP                        String?   @db.VarChar(150)
+  created_UserAgent                 String?   @db.VarChar(150)
+  last_updated_by                   Int?
+  last_updated_on                   DateTime? @db.Date
+  last_updated_IP                   String?   @db.VarChar(50)
+  last_updated_UserAgent            String?   @db.VarChar(150)
+  img_alt_tag                       String?   @db.VarChar(170)
+}
+
+model page_section_detail_form_fields {
+  id               Int      @id @default(autoincrement())
+  page_section_id  Int?
+  html_element_id  Int?
+  field_label      String?  @db.VarChar(255)
+  is_required      Boolean?
+  sorting_index    Int?
+  field_label_code String?  @db.VarChar(150)
+  image_dimension  String?  @db.VarChar(100)
+  field_max_length Int?
+}
+
+model page_section_detail_preview_data {
+  id                                Int       @id @default(autoincrement())
+  page_section_detail_form_field_id Int?
+  data                              String?
+  created_by                        Int?
+  created_on                        DateTime? @db.Timestamp(6)
+  created_IP                        String?   @db.VarChar(150)
+  created_UserAgent                 String?   @db.VarChar(150)
+  last_updated_by                   Int?
+  last_updated_on                   DateTime? @db.Date
+  last_updated_IP                   String?   @db.VarChar(150)
+  last_updated_UserAgent            String?   @db.VarChar(150)
+}
+
+model page_sections {
+  page_section_id     Int     @id @default(autoincrement())
+  page_id             Int?
+  section_title       String? @db.VarChar(255)
+  sorting_index       Int?
+  section_description String? @db.VarChar(255)
+  section_label       String? @db.VarChar(255)
+  section_code        String? @db.VarChar(150)
+}
+
+model page_sub_section_data {
+  id                             Int       @id @default(autoincrement())
+  page_sub_section_form_field_id Int?
+  data                           String?
+  created_by                     Int?
+  created_on                     DateTime? @db.Date
+  created_IP                     String?   @db.VarChar(50)
+  created_UserAgent              String?   @db.VarChar(150)
+  last_updated_by                Int?
+  last_updated_on                DateTime? @db.Date
+  last_updated_IP                String?   @db.VarChar(50)
+  last_updated_UserAgent         String?   @db.VarChar(150)
+  img_alt_tag                    String?   @db.VarChar(170)
+}
+
+model page_sub_section_form_fields {
+  id                  Int     @unique @default(autoincrement())
+  page_sub_section_id Int?
+  html_element_id     Int?
+  field_title         String? @db.VarChar(255)
+  is_required         String? @db.Bit(1)
+  is_title            String? @db.Bit(1)
+  sorting_index       Int?
+  field_title_code    String? @db.VarChar(150)
+  image_dimension     String? @db.VarChar(100)
+  field_max_length    Int?
+}
+
+model page_sub_section_preview_data {
+  id                             Int       @id @default(autoincrement())
+  page_sub_section_form_field_id Int?
+  data                           String?
+  created_by                     Int?
+  created_on                     DateTime? @db.Timestamp(6)
+  created_IP                     String?   @db.VarChar(150)
+  created_UserAgent              String?   @db.VarChar(150)
+  last_updated_by                Int?
+  last_updated_on                DateTime? @db.Date
+  last_updated_IP                String?   @db.VarChar(150)
+  last_updated_UserAgent         String?   @db.VarChar(150)
+}
+
+model page_sub_sections {
+  id                      Int      @id @default(autoincrement())
+  page_section_id         Int?
+  parent_id               Int?
+  maximum_records_allowed Int?
+  sorting_index           Int?
+  sub_section_title       String?  @db.VarChar(250)
+  is_deletable            Boolean?
+  sub_section_title_code  String?  @db.VarChar(150)
+  is_dropdown             Boolean?
+  section_id_dropdownref  Int?
+}
+
+model pages {
+  website_page_id    Int     @id @default(autoincrement())
+  page_title         String? @db.VarChar(255)
+  slug               String?
+  meta_title         String? @db.VarChar(255)
+  meta_description   String?
+  meta_keyword       String?
+  page_template_code String? @db.VarChar(255)
+  website_id         Int?
+  sorting_index      Int?
+  page_code          String? @db.VarChar(100)
+  breadcrumb_text    String? @db.VarChar(100)
+  is_active          Int?    @db.SmallInt
+}
+
+model properties {
+  property_id          Int       @id @default(autoincrement())
+  website_id           Int?
+  property_name        String?   @db.VarChar(255)
+  property_type_id     Int?
+  unit_plan_path       String?   @db.VarChar(255)
+  property_description String?
+  occupancy1_adult     Int?
+  occupancy1_child     Int?
+  occupancy2_adult     Int?
+  occupancy2_child     Int?
+  area_sqm             String?   @db.VarChar(50)
+  private_pool_size    String?   @db.VarChar(50)
+  created_by           Int?
+  created_on           DateTime? @db.Timestamp(6)
+  is_active            Int?      @db.SmallInt
+  sorting_index        Int?
+  tag_line             String?
+  inner_banner_image   String?   @db.VarChar(255)
+  slug                 String?
+  keywords             String?
+  meta_title           String?   @db.VarChar(70)
+  meta_description     String?   @db.VarChar(170)
+  inner_banner_alt_tag String?   @db.VarChar(170)
+  view_360_link        String?   @db.VarChar(255)
+}
+
+model properties_preview {
+  property_id          Int       @id @default(autoincrement())
+  website_id           Int?
+  property_name        String?   @db.VarChar(255)
+  property_type_id     Int?
+  unit_plan_path       String?   @db.VarChar(255)
+  property_description String?
+  occupancy1_adult     Int?
+  occupancy1_child     Int?
+  occupancy2_adult     Int?
+  occupancy2_child     Int?
+  area_sqm             String?   @db.VarChar(50)
+  private_pool_size    String?   @db.VarChar(50)
+  created_by           Int?
+  created_on           DateTime? @default(now()) @db.Timestamp(6)
+  is_active            Int?      @db.SmallInt
+  sorting_index        Int?
+  tag_line             String?
+  inner_banner_image   String?   @db.VarChar(255)
+  slug                 String?   @unique @db.VarChar
+  keywords             String?
+  meta_title           String?   @db.VarChar(70)
+  meta_description     String?   @db.VarChar(170)
+  inner_banner_alt_tag String?   @db.VarChar(170)
+  view_360_link        String?   @db.VarChar(255)
+}
+
+model property_amenities {
+  property_amenity_id Int  @id @default(autoincrement())
+  property_id         Int?
+  amenity_id          Int?
+  is_active           Int? @db.SmallInt
+}
+
+model property_amenities_preview {
+  property_amenity_id Int       @id @default(autoincrement())
+  property_id         Int?
+  amenity_id          Int?
+  is_active           Int?      @db.SmallInt
+  created_by          Int?
+  created_on          DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model property_beds {
+  property_bed_id Int  @id @default(autoincrement())
+  property_id     Int?
+  bed_type_id     Int?
+  bed_count       Int?
+}
+
+model property_beds_preview {
+  property_bed_id Int       @id @default(autoincrement())
+  property_id     Int?
+  bed_type_id     Int?
+  bed_count       Int?
+  created_by      Int?
+  created_on      DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model property_footnotes {
+  property_footnote_id Int     @id @default(autoincrement())
+  property_id          Int?
+  footnotes            String? @db.VarChar(210)
+  is_active            Int?    @db.SmallInt
+}
+
+model property_images {
+  property_imgae_id      Int     @id @default(autoincrement())
+  property_id            Int?
+  image_path             String? @db.VarChar(255)
+  image_title            String? @db.VarChar(150)
+  is_active              Int?    @db.SmallInt
+  sorting_index          Int?
+  size                   Int?
+  property_image_alt_tag String? @db.VarChar(170)
+}
+
+model property_images_preview {
+  property_image_id          Int       @id @default(autoincrement())
+  property_id                Int?
+  image_path                 String?   @db.VarChar(255)
+  image_title                String?   @db.VarChar(150)
+  is_active                  Int?      @db.SmallInt
+  sorting_index              Int?
+  size                       Int?
+  property_image_alt_tag     String?   @db.VarChar(170)
+  created_by                 Int?
+  created_on                 DateTime? @default(now()) @db.Timestamp(6)
+  original_property_image_id Int?
+}
+
+model property_occupancy {
+  property_occupancy_id Int  @id @default(autoincrement())
+  property_id           Int?
+  adult_count           Int?
+  child_count           Int?
+}
+
+model property_occupancy_preview {
+  property_occupancy_id Int       @id @default(autoincrement())
+  property_id           Int?
+  adult_count           Int?
+  child_count           Int?
+  created_by            Int?
+  created_on            DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model property_sign_features {
+  property_sign_feature_id Int     @id @default(autoincrement())
+  property_id              Int?
+  sign_feature             String? @db.VarChar(255)
+  is_active                Int?    @db.SmallInt
+}
+
+model property_sign_features_preview {
+  property_sign_feature_id Int       @id @default(autoincrement())
+  property_id              Int?
+  sign_feature             String?   @db.VarChar(255)
+  is_active                Int?      @db.SmallInt
+  created_by               Int?
+  created_on               DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model property_types {
+  property_type_id Int     @id @default(autoincrement())
+  property_type    String? @db.VarChar(100)
+  is_active        Int?
+}
+
+model restaurant_details {
+  restaurant_detail_id Int     @id @default(autoincrement())
+  restaurant_id        Int?
+  heading              String? @db.VarChar(255)
+  description          String?
+  image_path           String? @db.VarChar(255)
+  img_alt_tag          String? @db.VarChar(170)
+}
+
+model restaurant_details_preview {
+  restaurant_detail_id          Int       @id @default(autoincrement())
+  restaurant_id                 Int?
+  heading                       String?   @db.VarChar(255)
+  description                   String?
+  image_path                    String?   @db.VarChar(255)
+  img_alt_tag                   String?   @db.VarChar(170)
+  created_by                    Int?
+  created_on                    DateTime? @default(now()) @db.Timestamp(6)
+  original_restaurant_detail_id Int?
+  original_restaurant_id        Int?
+}
+
+model restaurant_features {
+  feature_id           Int     @id @default(autoincrement())
+  restaurant_detail_id Int?
+  features             String? @db.VarChar(255)
+  is_active            Int?    @db.SmallInt
+}
+
+model restaurant_features_preview {
+  feature_id           Int       @id @default(autoincrement())
+  restaurant_detail_id Int?
+  features             String?   @db.VarChar(255)
+  is_active            Int?      @db.SmallInt
+  created_by           Int?
+  created_on           DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model restaurant_menu {
+  restaurant_menu_id Int     @id @default(autoincrement())
+  restaurant_id      Int?
+  menu_name          String? @db.VarChar(100)
+  menu_pdf           String? @db.VarChar(255)
+}
+
+model restaurant_menu_preview {
+  restaurant_menu_id Int       @id @default(autoincrement())
+  restaurant_id      Int?
+  menu_name          String?   @db.VarChar(100)
+  menu_pdf           String?   @db.VarChar(255)
+  created_by         Int?
+  created_on         DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model restaurant_tags {
+  restaurant_tag_id Int     @id @default(autoincrement())
+  restaurant_tag    String? @db.VarChar(255)
+  is_active         Int?    @db.SmallInt
+  restaurant_id     Int?
+}
+
+model restaurant_tags_preview {
+  restaurant_tag_id Int       @id @default(autoincrement())
+  restaurant_tag    String?   @db.VarChar(255)
+  is_active         Int?      @db.SmallInt
+  restaurant_id     Int?
+  created_on        DateTime? @db.Timestamp(6)
+  created_by        Int?
+}
+
+model restaurant_types {
+  restaurant_type_id Int     @id @default(autoincrement())
+  restaurant_type    String? @db.VarChar(255)
+  is_active          Int?    @db.SmallInt
+  color_code         String? @db.VarChar(50)
+}
+
+model restaurants {
+  restaurant_id           Int       @id @default(autoincrement())
+  restaurant_name         String?   @db.VarChar(255)
+  restaurant_type_id      Int?
+  website_id              Int?
+  restaurant_image        String?   @db.VarChar(255)
+  restaurant_menu_image   String?   @db.VarChar(255)
+  restaurant_description  String?
+  created_on              DateTime? @db.Timestamp(6)
+  created_by              Int?
+  is_active               Int?      @db.SmallInt
+  restaurant_tagline      String?
+  sorting_index           Int?
+  restaurant_icon         String?   @db.VarChar(255)
+  inner_banner_image      String?   @db.VarChar(255)
+  slug                    String?
+  keywords                String?
+  meta_title              String?   @db.VarChar(70)
+  meta_description        String?   @db.VarChar(170)
+  is_menu_pdf             Int?      @db.SmallInt
+  inner_banner_alt_tag    String?   @db.VarChar(170)
+  image_alt_tag           String?   @db.VarChar(170)
+  highligts_title         String?   @db.VarChar(100)
+  highligts_description   String?
+  chef_signature          String?   @db.VarChar(255)
+  left_image              String?   @db.VarChar(255)
+  right_image             String?   @db.VarChar(255)
+  chef_signature_alt_tag  String?   @db.VarChar(170)
+  left_image_alt_tag      String?   @db.VarChar(170)
+  right_image_alt_tag     String?   @db.VarChar(170)
+  restaurant_logo_alt_tag String?   @db.VarChar(170)
+}
+
+model restaurants_preview {
+  restaurant_id           Int       @id @default(autoincrement())
+  restaurant_name         String?   @db.VarChar(255)
+  restaurant_type_id      Int?
+  website_id              Int?
+  restaurant_image        String?   @db.VarChar(255)
+  restaurant_menu_image   String?   @db.VarChar(255)
+  restaurant_description  String?
+  created_on              DateTime? @db.Timestamp(6)
+  created_by              Int?
+  is_active               Int?      @db.SmallInt
+  restaurant_tagline      String?
+  sorting_index           Int?
+  restaurant_icon         String?   @db.VarChar(255)
+  inner_banner_image      String?   @db.VarChar(255)
+  slug                    String?
+  keywords                String?
+  meta_title              String?   @db.VarChar(70)
+  meta_description        String?   @db.VarChar(170)
+  is_menu_pdf             Int?      @db.SmallInt
+  inner_banner_alt_tag    String?   @db.VarChar(170)
+  image_alt_tag           String?   @db.VarChar(170)
+  highligts_title         String?   @db.VarChar(100)
+  highligts_description   String?
+  chef_signature          String?   @db.VarChar(255)
+  left_image              String?   @db.VarChar(255)
+  right_image             String?   @db.VarChar(255)
+  chef_signature_alt_tag  String?   @db.VarChar(170)
+  left_image_alt_tag      String?   @db.VarChar(170)
+  right_image_alt_tag     String?   @db.VarChar(170)
+  restaurant_logo_alt_tag String?   @db.VarChar(170)
+}
+
+model user_assigned_roles {
+  user_assigned_role_id Int        @id @default(autoincrement())
+  user_id               Int?
+  user_role_id          Int?
+  website_id            Int?
+  assigned_by           Int?
+  assigned_on           DateTime?  @db.Timestamp(6)
+  user_role             user_role? @relation(fields: [user_role_id], references: [user_role_id], onDelete: NoAction, onUpdate: NoAction)
+  websites              websites?  @relation(fields: [website_id], references: [website_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model user_role {
+  user_role_id          Int                     @id @default(autoincrement())
+  user_role             String?                 @db.VarChar(50)
+  is_admin              Int?                    @db.SmallInt
+  is_super_admin        Int?                    @db.SmallInt
+  is_active             Int?                    @db.SmallInt
+  created_on            DateTime?               @db.Timestamp(6)
+  last_edited_on        DateTime?               @db.Timestamp(6)
+  user_assigned_roles   user_assigned_roles[]
+  user_role_navigations user_role_navigations[]
+}
+
+model user_role_navigations {
+  user_role_navigation_id Int              @id @default(autoincrement())
+  user_role_id            Int?
+  navigation_item_id      Int?
+  is_active               Int?             @db.SmallInt
+  navigation_item         navigation_item? @relation(fields: [navigation_item_id], references: [navigation_item_id], onDelete: NoAction, onUpdate: NoAction)
+  user_role               user_role?       @relation(fields: [user_role_id], references: [user_role_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model users {
+  user_id    Int       @id @default(autoincrement())
+  user_name  String?   @db.VarChar(150)
+  password   String?   @db.VarChar(255)
+  phone      String?   @db.VarChar(15)
+  email      String?   @db.VarChar(250)
+  created_by Int?
+  created_on DateTime? @db.Timestamp(6)
+  is_active  Int?      @db.SmallInt
+}
+
+model website_enquiries {
+  enquiry_id      Int            @id @default(autoincrement())
+  website_id      Int?
+  enquiry_type_id Int?
+  name            String?        @db.VarChar(50)
+  email           String?        @db.VarChar(255)
+  phone           String?        @db.VarChar(20)
+  message         String?
+  datetime        DateTime?      @db.Timestamp(6)
+  subject         String?
+  resort_id       Int?
+  is_all_resorts  Int?           @db.SmallInt
+  status_id       Int?
+  user_id         Int?
+  enquiry_types   enquiry_types? @relation(fields: [enquiry_type_id], references: [enquiry_type_id], onDelete: NoAction, onUpdate: NoAction)
+  websites        websites?      @relation(fields: [website_id], references: [website_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model website_menu {
+  menu_id       Int     @id @default(autoincrement())
+  website_id    Int?
+  menu_text     String? @db.VarChar(150)
+  menu_level    Int?
+  parent_id     Int?
+  sorting_index Int?
+  slug          String?
+  is_active     Int?    @db.SmallInt
+  page_id       Int?
+}
+
+model website_navigations {
+  id                 Int  @id
+  website_id         Int?
+  navigation_item_id Int?
+}
+
+model website_offers {
+  website_offer_id      Int       @id @default(autoincrement())
+  website_id            Int?
+  offer_name            String?   @db.VarChar(150)
+  description           String?
+  brand_resort_id       Int?
+  discount_percent      Decimal?  @db.Decimal(5, 2)
+  offer_image           String?
+  website_url           String?
+  terms_conditions      String?
+  highlights            String?
+  offer_start_date      DateTime? @db.Date
+  offer_end_date        DateTime? @db.Date
+  is_featured_to_brand  Int?      @db.SmallInt
+  is_featured_to_resort Int?      @db.SmallInt
+  offer_short_link      String?   @db.VarChar(50)
+  created_on            DateTime? @db.Timestamp(6)
+  created_by            Int?
+  updated_on            DateTime? @db.Timestamp(6)
+  updated_by            Int?
+  is_active             Int?      @db.SmallInt
+  discount_text         String?   @db.VarChar(100)
+  sorting_index         Int?
+  inner_banner_image    String?   @db.VarChar(255)
+  slug                  String?   @unique(map: "offer_unique_slug")
+  keywords              String?
+  meta_title            String?   @db.VarChar(70)
+  meta_description      String?   @db.VarChar(170)
+  offer_image_alt_tag   String?   @db.VarChar(170)
+  inner_banner_alt_tag  String?   @db.VarChar(170)
+  brand_sorting_index   Int?
+}
+
+model website_offers_preview {
+  website_offer_id      Int       @id @default(autoincrement())
+  website_id            Int
+  offer_name            String    @db.VarChar(150)
+  description           String?
+  brand_resort_id       Int?
+  discount_percent      Decimal?  @db.Decimal(5, 2)
+  offer_image           String?
+  website_url           String?
+  terms_conditions      String?
+  highlights            String?
+  offer_start_date      DateTime? @db.Date
+  offer_end_date        DateTime? @db.Date
+  is_featured_to_brand  Int?      @db.SmallInt
+  is_featured_to_resort Int?      @db.SmallInt
+  offer_short_link      String?   @db.VarChar(50)
+  created_on            DateTime? @default(now()) @db.Timestamp(6)
+  created_by            Int?
+  updated_on            DateTime? @default(now()) @db.Timestamp(6)
+  updated_by            Int?
+  is_active             Int?      @db.SmallInt
+  discount_text         String?   @db.VarChar(100)
+  sorting_index         Int?
+  inner_banner_image    String?   @db.VarChar(255)
+  slug                  String?   @unique @db.VarChar
+  keywords              String?
+  meta_title            String?   @db.VarChar(70)
+  meta_description      String?   @db.VarChar(170)
+  offer_image_alt_tag   String?   @db.VarChar(170)
+  inner_banner_alt_tag  String?   @db.VarChar(170)
+  brand_sorting_index   Int?
+}
+
+model website_press_release_resorts {
+  website_press_release_resort_id Int  @id @default(autoincrement())
+  brand_resort_id                 Int?
+  website_press_release_id        Int?
+}
+
+model website_press_release_resorts_preview {
+  website_press_release_resort_id Int       @id @default(autoincrement())
+  brand_resort_id                 Int?
+  website_press_release_id        Int?
+  created_by                      Int?
+  created_on                      DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model website_press_releases {
+  website_press_release_id Int       @id @default(autoincrement())
+  image_path               String?   @db.VarChar(255)
+  title                    String?   @db.VarChar(255)
+  date                     DateTime? @db.Date
+  time                     DateTime? @db.Time(6)
+  description              String?
+  tags                     String?
+  created_by               Int?
+  created_on               DateTime? @db.Timestamp(6)
+  last_modified_by         Int?
+  last_modified_on         DateTime? @db.Timestamp(6)
+  is_published             Int?      @db.SmallInt
+  website_id               Int?
+  published_date           DateTime? @db.Timestamp(6)
+  slug                     String?   @unique(map: "press_release_slug_unique")
+  sorting_index            Int?
+  keywords                 String?
+  meta_title               String?   @db.VarChar(70)
+  meta_description         String?   @db.VarChar(170)
+  image_alt_tag            String?   @db.VarChar(170)
+  brand_sorting_index      Int?
+  websites                 websites? @relation(fields: [website_id], references: [website_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model website_press_releases_preview {
+  website_press_release_id Int       @id @default(autoincrement())
+  image_path               String?   @db.VarChar(255)
+  title                    String?   @db.VarChar(255)
+  date                     DateTime? @db.Date
+  time                     DateTime? @db.Time(6)
+  description              String?
+  tags                     String?
+  created_by               Int?
+  created_on               DateTime? @default(now()) @db.Timestamp(6)
+  last_modified_by         Int?
+  last_modified_on         DateTime? @default(now()) @db.Timestamp(6)
+  is_published             Int?      @db.SmallInt
+  website_id               Int?
+  published_date           DateTime? @db.Timestamp(6)
+  slug                     String?   @unique @db.VarChar
+  sorting_index            Int?
+  keywords                 String?
+  meta_title               String?   @db.VarChar(70)
+  meta_description         String?   @db.VarChar(170)
+  image_alt_tag            String?   @db.VarChar(170)
+  brand_sorting_index      Int?
+}
+
+model websites {
+  website_id             Int                      @id @default(autoincrement())
+  website                String?                  @db.VarChar(100)
+  description            String?
+  website_image          String?
+  brand_id               Int?
+  brand_resort_id        Int?
+  website_folder         String                   @db.VarChar
+  website_url            String?                  @db.VarChar
+  website_code           String?                  @db.VarChar(50)
+  sorting_index          Int?
+  media_files            media_files[]
+  user_assigned_roles    user_assigned_roles[]
+  website_enquiries      website_enquiries[]
+  website_press_releases website_press_releases[]
+  brands                 brands?                  @relation(fields: [brand_id], references: [brand_id], onDelete: NoAction, onUpdate: NoAction)
+  brand_resorts          brand_resorts?           @relation(fields: [brand_resort_id], references: [brand_resort_id], onDelete: NoAction, onUpdate: NoAction)
+}
