@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Link from "next/link";
 const C_Table: React.FC<{ data: any }> = ({ data }) => {
   console.log("value of datsis : ",data)
   return (
@@ -42,7 +43,7 @@ const C_Table: React.FC<{ data: any }> = ({ data }) => {
                 <TableCell> {item.created_by} </TableCell>
                 <TableCell> {item.created_by} </TableCell>
                 <TableCell> {item.is_published} </TableCell>
-                <TableCell> <button className="text-blue-950">Edit</button> <button className="text-red">Delete</button> </TableCell>
+                <TableCell> <Link href={{pathname:"/pressrelease/edit", query: { name: 'test'}}}  className="text-blue-950"> Edit </Link> <Link href={"/pressrelesae/delete"}  className="text-blue-950"> Delete </Link> </TableCell>
 
               </TableRow>
             );

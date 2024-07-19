@@ -14,7 +14,7 @@ export const fetchData=async(method: methodsTypes,url:string,body?:string)=>{
         }
         else if(method==="GET"){
             const response=await axios.get(`${APIKEY}/api/${url}`)
-            return response.data
+            return response
     
         }
         else if(method==="PUT"){

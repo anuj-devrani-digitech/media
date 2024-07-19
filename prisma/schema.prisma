@@ -728,8 +728,7 @@ model website_offers {
 model website_offers_preview {
   website_offer_id      Int       @id @default(autoincrement())
   website_id            Int
-  offer_name            String    @db.VarChar(150)
-  description           String?
+
   brand_resort_id       Int?
   discount_percent      Decimal?  @db.Decimal(5, 2)
   offer_image           String?

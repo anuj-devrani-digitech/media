@@ -4,12 +4,12 @@ import prisma from "../../../../dbconfig/config";
 export async function GET(reques: NextRequest) {
   try {
     const pressrelease = await prisma.website_press_releases.findMany({
-        where:{
-            is_published:1
-        },
-        orderBy:{
-            sorting_index:'asc'
-        }
+      where: {
+        is_published: 1,
+      },
+      orderBy: {
+        sorting_index: "asc",
+      },
     });
     return NextResponse.json(
       {
@@ -26,4 +26,19 @@ export async function GET(reques: NextRequest) {
       message: "error :  " + error,
     });
   }
+}
+export async function  POST(request:NextRequest) {
+  const {}=await request.json()
+
+
+  try {
+    return(
+      NextResponse.json({
+        message :"ok report "
+      })
+    )
+  } catch (error) {
+    
+  }
+  
 }
